@@ -2,11 +2,10 @@ package ru.otus.generics;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Stack;
 
 public class CustomerReverseOrder {
 
-    private final Stack<Customer> customerQueue = new Stack<>();
+    private final Deque<Customer> customerQueue = new ArrayDeque<>();
 
     //todo: 2. надо реализовать методы этого класса
     //надо подобрать подходящую структуру данных, тогда решение будет в "две строчки"

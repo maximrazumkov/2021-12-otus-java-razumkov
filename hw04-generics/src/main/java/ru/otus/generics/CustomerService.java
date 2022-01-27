@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 public class CustomerService {
 
-    private final TreeMap<Customer, String> treeMap = new TreeMap<>();
+    private final TreeMap<Customer, String> treeMap = new TreeMap<>(new CustomerScoresComparator()::compare);
 
     //todo: 3. надо реализовать методы этого класса
     //важно подобрать подходящую Map-у, посмотрите на редко используемые методы, они тут полезны
