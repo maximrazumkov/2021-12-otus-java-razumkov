@@ -17,6 +17,7 @@ public class Reflection {
     private final static String NOT_CORRECT_SET_ANNOTATION = "Не может метод теста быть помечен несколькими аннтациями.";
     private final static String SHOULD_NOT_BE_ANY_BEFORE = "Тестовый класс не может иметь несколько аннотоций @before";
     private final static String SHOULD_NOT_BE_ANY_AFTER = "Тестовый класс не может иметь несколько аннотоций @after";
+    private final static String COULD_NOT_CALL_AFTER = "Не удалось вызвать метод after";
     private final static String STATISTIC_HEADER = "Результат выполнения тесто:\n";
     private final static String TEST_RESULT = "%s - %s";
     private final static String COUNT_OK = "Успешно - %d";
@@ -87,9 +88,12 @@ public class Reflection {
         Class<?> type = metaInfo.getType();
         Map<String, State> result = metaInfo.getResult();
         metaInfo.getMethods().stream().forEach(method -> {
+            Object instance = null;
             try {
-                Object instance = ReflectionHelper.instantiate(type);
-                ReflectionHelper.callMethod(instance, before.getName());
+                instance = ReflectionHelper.instantiate(type);
+                if (before.getName() != null) {
+                    ReflectionHelper.callMethod(instance, before.getName());
+                }
                 ReflectionHelper.callMethod(instance, method.getName());
                 ReflectionHelper.callMethod(instance, after.getName());
                 result.put(method.getName(), State.OK);
@@ -97,6 +101,12 @@ public class Reflection {
             } catch (Exception e) {
                 result.put(method.getName(), State.FAIL);
                 metaInfo.setCountFail(metaInfo.getCountFail() + 1);
+            } finally {
+                try {
+                    ReflectionHelper.callMethod(instance, after.getName());
+                } catch (Exception e) {
+                    System.out.println(COULD_NOT_CALL_AFTER);
+                }
             }
         });
     }
