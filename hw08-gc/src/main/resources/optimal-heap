@@ -1,0 +1,22 @@
+  heap-size *           time            *    is_optimal     *   after optimization
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  256 mb    *     OutOfMemoryError      *      false        *                       *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  512 mb    *  spend msec:12410, sec:12 *      false        *                       *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  768 mb    *  spend msec:11800, sec:11 *      false        *                       *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  1024 mb   *  spend msec:11186, sec:11 *      false        *                       *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  1280 mb   *  spend msec:10982, sec:10 *      false        *                       *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  1536 mb   *  spend msec:10708, sec:10 *      false        *                       *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  1792 mb   *  spend msec:9901, sec:9   *      true         * spend msec:2297, sec:2*
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  2048 mb   *  spend msec:10866, sec:10 *      false        *                       *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+!!! Experiment !!!
+If to add -XX:NewSize=768m -XX:MaxNewSize=768m -XX:+AggressiveHeap -XX:SurvivorRatio=4 -Xms1792m -Xmx1792m
+result will be: spend msec:1563, sec:1
