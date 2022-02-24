@@ -1,5 +1,7 @@
 package ru.otus.solid.atmmachine.fucntions;
 
-public interface AtmFunction {
-    void run();
+import java.util.function.Supplier;
+
+public interface AtmFunction<T, R> {
+    Supplier<R> run(Supplier<T> parameters);
 }
