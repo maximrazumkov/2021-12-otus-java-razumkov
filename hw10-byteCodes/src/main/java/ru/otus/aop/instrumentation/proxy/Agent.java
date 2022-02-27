@@ -24,16 +24,13 @@ public class Agent {
                                     Class<?> classBeingRedefined,
                                     ProtectionDomain protectionDomain,
                                     byte[] classfileBuffer) {
-                if (className.equals("ru/otus/aop/instrumentation/proxy/MyClassImpl")) {
-                    return addProxyMethod(classfileBuffer);
-                }
-                return classfileBuffer;
+                return addProxyMethod(className, classfileBuffer);
             }
         });
 
     }
 
-    private static byte[] addProxyMethod(byte[] originalClass) {
+    private static byte[] addProxyMethod(String className, byte[] originalClass) {
         var cr = new ClassReader(originalClass);
         var cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
         final Map<String, String> methodsWithParams = new HashMap();
@@ -87,7 +84,7 @@ public class Agent {
             for (int i = 0; i < parameters.length; ++i) {
                 mv.visitVarInsn(Opcodes.ALOAD, i);
             }
-            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ru/otus/aop/instrumentation/proxy/MyClassImpl", method.getKey() + "Log", method.getValue(), false);
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, className, method.getKey() + "Log", method.getValue(), false);
 
             mv.visitInsn(Opcodes.RETURN);
             mv.visitMaxs(0, 0);
