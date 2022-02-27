@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class AtmMachineTest {
 
     private AtmMachine atmMachine;
-
     private Map<Banknote, Integer> banknoteMap;
 
     @BeforeEach
