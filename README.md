@@ -12,3 +12,5 @@
 3. Аннотации. ДЗ - hw06-reflection
 
 4. Сборщик мусора. ДЗ - hw08-gc
+
+5. Байт код, class-loader, инструментация, asm. ДЗ - hw10-byteCodes
