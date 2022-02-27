@@ -1,4 +1,4 @@
-package ru.otus.solid.atmmachine.models;
+package ru.otus.solid.atmmachine;
 
 import java.util.Arrays;
 import java.util.List;

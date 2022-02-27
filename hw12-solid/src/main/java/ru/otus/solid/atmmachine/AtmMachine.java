@@ -1,7 +1,9 @@
 package ru.otus.solid.atmmachine;
 
-import java.util.function.Supplier;
+import java.util.Map;
 
 public interface AtmMachine {
-    Supplier<?> start(int functionId, Supplier<?> parameters);
+    Map<Banknote, Integer> getMoneyBySum(int sum);
+    int getBalance();
+    void putMoney(int sum);
 }

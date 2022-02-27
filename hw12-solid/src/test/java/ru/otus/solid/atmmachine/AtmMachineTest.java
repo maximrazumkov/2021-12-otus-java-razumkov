@@ -3,34 +3,19 @@ package ru.otus.solid.atmmachine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.solid.atmmachine.fucntions.*;
-import ru.otus.solid.atmmachine.models.Banknote;
-import ru.otus.solid.atmmachine.models.Money;
-import ru.otus.solid.atmmachine.stores.AtmStore;
-import ru.otus.solid.atmmachine.stores.AtmStoreImpl;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static ru.otus.solid.atmmachine.fucntions.AtmFunctionsMap.NOT_SUPPORT_FUNCTION;
-import static ru.otus.solid.atmmachine.fucntions.GettingCashAtmMachine.BALANCE_IS_EMPTY;
-import static ru.otus.solid.atmmachine.fucntions.PuttingCashAtmFunction.SUM_NOT_CORRECT;
-import static ru.otus.solid.atmmachine.stores.AtmStoreImpl.SUM_MORE_BALANCE;
 
 @DisplayName("Класс AtmMachineImpl")
 public class AtmMachineTest {
 
     private AtmMachine atmMachine;
 
-    private AtmStore<Money> atmStore;
-
     private Map<Banknote, Integer> banknoteMap;
-
-    private AtmFunctions<Integer, AtmFunction> atmFunctions;
 
     @BeforeEach
     public void initAtmMachine() {
@@ -38,63 +23,50 @@ public class AtmMachineTest {
         banknoteMap.put(Banknote.ONE_HUNDRED, 10);
         banknoteMap.put(Banknote.FIVE_HUNDREDS, 10);
         banknoteMap.put(Banknote.ONE_THOUSAND, 5);
-        atmStore = new AtmStoreImpl(banknoteMap);
-        AtmFunction showingBalance = new ShowingBalanceAtmFunction(atmStore);
-        AtmFunction puttingCash = new PuttingCashAtmFunction(atmStore);
-        AtmFunction gettingCash = new GettingCashAtmMachine(atmStore);
-        Map<Integer, AtmFunction> atmFunctionMap = new LinkedHashMap<>();
-        atmFunctionMap.put(1, showingBalance);
-        atmFunctionMap.put(2, puttingCash);
-        atmFunctionMap.put(3, gettingCash);
-        atmFunctions = new AtmFunctionsMap<>(atmFunctionMap);
-        atmMachine = new AtmMachineImpl(atmFunctions);
+        atmMachine = new MapMemoryAtmMachine(banknoteMap);
     }
 
     @Test
     @DisplayName("Должен принимать деньги разного номинала")
     public void shouldTakeDifferentMoney() {
-        atmMachine.start(2, () -> 1900);
-        assertThat(atmStore.getBalance() == 17400);
+        atmMachine.putMoney(1900);
+        assertThat(atmMachine.getBalance()).isEqualTo(12_900);
     }
 
     @Test
     @DisplayName("Должен выдать запрашиваемую сумму минимальным количесвтом банкнот")
     public void shouldGiveMinBanknoteMoneyBySum() {
-        atmMachine.start(3, () -> 10000);
-        assertThat(atmStore.getBalance() == 5500);
+        Map<Banknote, Integer> banknoteMap = new HashMap<>();
+        banknoteMap.put(Banknote.ONE_THOUSAND, 1);
+        banknoteMap.put(Banknote.FIVE_HUNDREDS, 1);
+        banknoteMap.put(Banknote.ONE_HUNDRED, 4);
+        Map<Banknote, Integer> money = atmMachine.getMoneyBySum(1900);
+        assertThat(atmMachine.getBalance()).isEqualTo(9100);
+        assertThat(money).isEqualTo(banknoteMap);
     }
 
     @Test
     @DisplayName("Должен показать остаток денежных стредств")
     public void shouldShowCashBalance() {
-        atmMachine.start(1, () -> null);
-        int balance = atmStore.getBalance();
-        assertThat(balance == 10500);
-    }
-
-    @Test()
-    @DisplayName("Должен выдать исключение, если функция отсутсвует")
-    public void shouldThrowExceptionWhenFunctionIsNot() {
-        assertThrows(RuntimeException.class, () -> atmMachine.start(1000, () -> 10000), NOT_SUPPORT_FUNCTION);
+        assertThat(atmMachine.getBalance()).isEqualTo(11_000);
     }
 
     @Test()
     @DisplayName("Должен выдать исключение, если cумма превышает допустимый баланс")
     public void shouldThrowExceptionWhenSumMoreThanBalance() {
-        String errMessage = String.format(SUM_MORE_BALANCE, 99999, atmStore.getBalance());
-        assertThrows(RuntimeException.class, () -> atmMachine.start(3, () -> 99999), errMessage);
+        assertThrows(RuntimeException.class, () -> atmMachine.getMoneyBySum(99_999));
     }
 
     @Test()
     @DisplayName("Должен выдать исключение, если cумма некрастна допустимой")
     public void shouldThrowExceptionWhenSumNotCorrect() {
-        assertThrows(RuntimeException.class, () -> atmMachine.start(3, () -> 1050), SUM_NOT_CORRECT);
+        assertThrows(RuntimeException.class, () -> atmMachine.getMoneyBySum(1050));
     }
 
     @Test()
     @DisplayName("Должен выдать исключение, если баланс равен 0")
     public void shouldThrowExceptionWhenBalanceIsZero() {
-        atmStore.getMoneyBySum(10500);
-        assertThrows(RuntimeException.class, () -> atmMachine.start(3, () -> 5000), BALANCE_IS_EMPTY);
+        atmMachine = new MapMemoryAtmMachine(new HashMap<>());
+        assertThrows(RuntimeException.class, () -> atmMachine.getMoneyBySum(1000));
     }
 }

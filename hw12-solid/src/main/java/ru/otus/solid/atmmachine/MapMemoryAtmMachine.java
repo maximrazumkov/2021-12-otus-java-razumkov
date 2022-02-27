@@ -1,26 +1,26 @@
-package ru.otus.solid.atmmachine.stores;
+package ru.otus.solid.atmmachine;
 
-import ru.otus.solid.atmmachine.models.Banknote;
-import ru.otus.solid.atmmachine.models.Money;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
-
-public class AtmStoreImpl implements AtmStore<Money> {
+public class MapMemoryAtmMachine implements AtmMachine {
 
     public final static String SUM_MORE_BALANCE = "Запрашиваемая сумма %s превышает баланс %s";
     public final static String OPERATION_ERROR = "Ошибка операции. Повторите попытку позже.";
+    public final static String SUM_SHOULD_NOT_ZERO = "Нельзя запросить сумму равную: %s";
+    public final static String SUM_NOT_CORRECT = "Введенная сумма %s некратна: %s";
 
     private final Map<Banknote, Integer> money;
 
-    public AtmStoreImpl(Map<Banknote, Integer> money) {
+    public MapMemoryAtmMachine(Map<Banknote, Integer> money) {
         this.money = money;
     }
 
     @Override
-    public Money getMoneyBySum(int sum) {
-        if (getBalance() < sum) {
-            throw new RuntimeException(String.format(SUM_MORE_BALANCE, sum, getBalance()));
-        }
+    public Map<Banknote, Integer> getMoneyBySum(int sum) {
+        validGettingSum(sum);
         Map<Banknote, Integer> moneyResult = new HashMap<>();
         int remainingSum = sum;
         List<Banknote> banknotes = Banknote.sortedByDesc();
@@ -29,7 +29,22 @@ public class AtmStoreImpl implements AtmStore<Money> {
                 remainingSum = divideMoney(moneyResult, banknote, remainingSum);
             }
         }
-        return new Money(moneyResult);
+        return moneyResult;
+    }
+
+    private void validGettingSum(int sum) {
+        if (sum == 0) {
+            throw new RuntimeException(String.format(SUM_SHOULD_NOT_ZERO, sum));
+        }
+        int balance = getBalance();
+        if (balance < sum) {
+            throw new RuntimeException(String.format(SUM_MORE_BALANCE, sum, balance));
+        }
+        int possibleAmt = getPossibleAmount();
+        int remaining = sum % possibleAmt;
+        if (remaining != 0) {
+            throw new RuntimeException(String.format(SUM_NOT_CORRECT, sum, possibleAmt));
+        }
     }
 
     private int divideMoney(Map<Banknote, Integer> moneyResult, Banknote banknote, int sum) {
@@ -61,13 +76,25 @@ public class AtmStoreImpl implements AtmStore<Money> {
 
     @Override
     public void putMoney(int sum) {
-        if (sum == 0) {
-            throw new RuntimeException(OPERATION_ERROR);
-        }
+        validPuttingSum(sum);
         List<Banknote> banknotes = Banknote.sortedByDesc();
         int remainingSum = sum;
         for (Banknote banknote : banknotes) {
             remainingSum = sumMoney(banknote, remainingSum);
+        }
+    }
+
+    private void validPuttingSum(int sum) {
+        if (sum == 0) {
+            throw new RuntimeException(OPERATION_ERROR);
+        }
+        List<Banknote> banknotes = Banknote.sortedByDesc();
+        int errSum = sum;
+        for (Banknote banknote: banknotes) {
+            errSum %= Integer.parseInt(banknote.getCode());
+        }
+        if (errSum != 0) {
+            throw new RuntimeException(SUM_NOT_CORRECT);
         }
     }
 
@@ -85,8 +112,7 @@ public class AtmStoreImpl implements AtmStore<Money> {
         return sum;
     }
 
-    @Override
-    public int getPossibleAmount() {
+    private int getPossibleAmount() {
         return money.entrySet().stream()
                 .filter(value -> value.getValue() > 0)
                 .min(Comparator.comparingInt(value -> Integer.parseInt(value.getKey().getCode())))
