@@ -1,6 +1,8 @@
 package ru.otus.processor.providers;
 
+import java.time.LocalDateTime;
+
 @FunctionalInterface
 public interface SecondProvider {
-    int getCurrentSecond();
+    LocalDateTime getCurrentSecond();
 }

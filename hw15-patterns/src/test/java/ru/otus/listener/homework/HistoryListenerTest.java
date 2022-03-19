@@ -5,7 +5,7 @@ import ru.otus.model.Message;
 import ru.otus.model.ObjectForMessage;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -14,7 +14,7 @@ class HistoryListenerTest {
     @Test
     void listenerTest() {
         //given
-        var historyListener = new HistoryListener(new HashSet<>());
+        var historyListener = new HistoryListener(new HashMap<>());
 
         var id = 100L;
         var data = "33";
