@@ -15,7 +15,7 @@ public class ThrowerExceptionEvenSecondProcessor implements Processor {
 
     @Override
     public Message process(Message message) {
-        if ((secondProvider.getCurrentSecond() % 2) == 0) {
+        if ((secondProvider.getCurrentSecond().getSecond() % 2) == 0) {
             throw new RuntimeException();
         }
         return processor.process(message);

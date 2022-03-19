@@ -7,6 +7,8 @@ import org.mockito.BDDMockito;
 import ru.otus.model.Message;
 import ru.otus.processor.providers.SecondProvider;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -27,7 +29,8 @@ public class ThrowerExceptionEvenSecondProcessorTest {
     @DisplayName("Должен выбросить исключение в четную секунду")
     public void shouldThrowExceptionWhenEvanSecond() {
         Message message = BDDMockito.mock(Message.class);
-        BDDMockito.given(secondProvider.getCurrentSecond()).willReturn(2);
+        LocalDateTime localDateTime = LocalDateTime.of(2022,12,12,12,12, 12);
+        BDDMockito.given(secondProvider.getCurrentSecond()).willReturn(localDateTime);
         assertThrows(RuntimeException.class, () -> throwerExceptionEvenSecondProcessor.process(message));
         verify(anyProcessor, times(0)).process(message);
     }
@@ -36,7 +39,8 @@ public class ThrowerExceptionEvenSecondProcessorTest {
     @DisplayName("Должен продолжить работу в нечетную секунду")
     public void shouldWorkSuccessWhenOddSecond() {
         Message message = BDDMockito.mock(Message.class);
-        BDDMockito.given(secondProvider.getCurrentSecond()).willReturn(3);
+        LocalDateTime localDateTime = LocalDateTime.of(2022,12,12,12,13, 13);
+        BDDMockito.given(secondProvider.getCurrentSecond()).willReturn(localDateTime);
         throwerExceptionEvenSecondProcessor.process(message);
         verify(anyProcessor, times(1)).process(message);
     }
