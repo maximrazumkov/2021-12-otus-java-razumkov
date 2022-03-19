@@ -51,7 +51,7 @@ public class MapMemoryAtmMachine implements AtmMachine {
         if (sum == 0) {
             return sum;
         }
-        int nominal = Integer.parseInt(banknote.getCode());
+        int nominal = banknote.getCode();
         int banknotes = sum / nominal;
         int remaining = money.get(banknote);
         int div = remaining - banknotes;
@@ -70,7 +70,7 @@ public class MapMemoryAtmMachine implements AtmMachine {
     @Override
     public int getBalance() {
         return money.entrySet().stream()
-                .mapToInt(entry -> entry.getValue() * Integer.parseInt(entry.getKey().getCode()))
+                .mapToInt(entry -> entry.getValue() * entry.getKey().getCode())
                 .reduce(0, Integer::sum);
     }
 
@@ -91,7 +91,7 @@ public class MapMemoryAtmMachine implements AtmMachine {
         List<Banknote> banknotes = Banknote.sortedByDesc();
         int errSum = sum;
         for (Banknote banknote: banknotes) {
-            errSum %= Integer.parseInt(banknote.getCode());
+            errSum %= banknote.getCode();
         }
         if (errSum != 0) {
             throw new RuntimeException(SUM_NOT_CORRECT);
@@ -102,7 +102,7 @@ public class MapMemoryAtmMachine implements AtmMachine {
         if (!this.money.containsKey(banknote)) {
             this.money.put(banknote, 0);
         }
-        int nominal = Integer.parseInt(banknote.getCode());
+        int nominal = banknote.getCode();
         int banknoteCount = sum / nominal;
         if (banknoteCount > 0) {
             int remainingBanknotes = this.money.get(banknote);
@@ -115,8 +115,8 @@ public class MapMemoryAtmMachine implements AtmMachine {
     private int getPossibleAmount() {
         return money.entrySet().stream()
                 .filter(value -> value.getValue() > 0)
-                .min(Comparator.comparingInt(value -> Integer.parseInt(value.getKey().getCode())))
-                .map(entry -> Integer.valueOf(entry.getKey().getCode()))
+                .min(Comparator.comparingInt(value -> value.getKey().getCode()))
+                .map(entry -> entry.getKey().getCode())
                 .orElse(0);
     }
 }
