@@ -2,7 +2,6 @@ package ru.otus.dataprocessor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.otus.model.Measurement;
-import ru.otus.model.MixMeasurement;
 
 import java.io.PrintWriter;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class FileSerializer implements Serializer {
         try(PrintWriter out = new PrintWriter(fileName)) {
             out.print(objectMapper.writeValueAsString(data));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new FileProcessException(e);
         }
     }
 }

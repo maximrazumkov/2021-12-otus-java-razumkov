@@ -3,7 +3,6 @@ package ru.otus.dataprocessor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.otus.model.Measurement;
-import ru.otus.model.MixMeasurement;
 
 import java.io.InputStream;
 import java.util.List;
@@ -25,7 +24,7 @@ public class ResourcesFileLoader implements Loader {
             InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
             return objectMapper.readValue(is, new TypeReference<>(){});
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new FileProcessException(e);
         }
     }
 }
