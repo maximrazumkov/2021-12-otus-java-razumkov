@@ -20,3 +20,5 @@
 7. Structural patterns. ДЗ  - hw15-patterns
 
 8. Сериализация. ДЗ - hw16-io
+
+9. JDBC. ДЗ - hw18-jdbc
