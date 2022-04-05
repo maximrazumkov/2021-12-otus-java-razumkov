@@ -1,84 +1,49 @@
 package ru.otus.jdbc.mapper.impl;
 
 import ru.otus.jdbc.mapper.EntityClassMetaData;
-import ru.otus.jdbc.mapper.annotation.Id;
-import ru.otus.jdbc.mapper.dto.SqlMetaData;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
-    private SqlMetaData<T> sqlMetaData;
+    private final Class<T> type;
+    private final Field idField;
+    private final Constructor<T> constructor;
+    private final List<Field> fields;
 
-    private EntityClassMetaDataImpl(SqlMetaData<T> sqlMetaData) {
-        this.sqlMetaData = sqlMetaData;
-    }
-
-    public static <T> EntityClassMetaData<T> initEntityClassMetaData(Class<T> clazz) {
-        return new EntityClassMetaDataImpl<>(getSqlMetaData(clazz));
-    }
-
-    private static <T> SqlMetaData<T> getSqlMetaData(Class<T> clazz) {
-        try {
-            Class<?>[] result = getFields(clazz.getDeclaredFields()).stream()
-                    .map(Field::getType)
-                    .toArray(Class<?>[]::new);
-            Constructor<?> constructor = clazz.getConstructor(result);
-            return SqlMetaData.builder()
-                    .setType(clazz)
-                    .setConstructor(constructor)
-                    .setIdField(getIdField(clazz.getDeclaredFields()))
-                    .setFields(getFields(clazz.getDeclaredFields()))
-                    .build();
-        } catch (Exception e) {
-            throw new RuntimeException("Не удалось обработать Entity", e);
-        }
-    }
-
-    private static Class<?>[] getConstructor(Class<?> clazz) {
-        Class<?>[] result = getFields(clazz.getDeclaredFields()).stream()
-                .map(Field::getType)
-                .toArray(Class<?>[]::new);
-        return clazz.getConstructor(result);
-    }
-
-    private static Field getIdField(Field[] fields) {
-        return Arrays.stream(fields).filter(field -> field.getDeclaredAnnotation(Id.class) != null)
-                .findFirst().orElseThrow(RuntimeException::new);
-    }
-
-    private static List<Field> getFields(Field[] fields) {
-        return Arrays.stream(fields).toList();
+    public EntityClassMetaDataImpl(Class<T> type, Field idField, Constructor<T> constructor, List<Field> fields) {
+        this.type = type;
+        this.idField = idField;
+        this.constructor = constructor;
+        this.fields = fields;
     }
 
     @Override
     public String getName() {
-        return sqlMetaData.getType().getSimpleName();
+        return type.getSimpleName();
     }
 
     @Override
     public Constructor<T> getConstructor() {
-        return sqlMetaData.getConstructor();
+        return constructor;
     }
 
     @Override
     public Field getIdField() {
-        return sqlMetaData.getIdField();
+        return idField;
     }
 
     @Override
     public List<Field> getAllFields() {
-        return sqlMetaData.getFields();
+        return fields;
     }
 
     @Override
     public List<Field> getFieldsWithoutId() {
-        return sqlMetaData.getFields().stream()
-                .filter(field -> !field.equals(sqlMetaData.getIdField()))
+        return fields.stream()
+                .filter(field -> !field.equals(idField))
                 .collect(Collectors.toList());
     }
 }

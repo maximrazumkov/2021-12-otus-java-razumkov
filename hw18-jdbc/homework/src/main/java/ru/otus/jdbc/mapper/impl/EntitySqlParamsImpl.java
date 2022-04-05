@@ -3,11 +3,9 @@ package ru.otus.jdbc.mapper.impl;
 import ru.otus.jdbc.mapper.EntityClassMetaData;
 import ru.otus.jdbc.mapper.EntitySqlParams;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,14 +20,11 @@ public class EntitySqlParamsImpl<T> implements EntitySqlParams<T> {
     @Override
     public T getObject(ResultSet rs) {
         try {
-            Constructor<?> constructor = entityClassMetaDataClient.getConstructor();
-            List<Field> fields = entityClassMetaDataClient.getAllFields();
             List<Object> objs = new ArrayList<>();
-            for (Field field : fields) {
+            for (Field field : entityClassMetaDataClient.getAllFields()) {
                 objs.add(rs.getObject(field.getName()));
             }
-            Object obj = constructor.newInstance(objs.toArray());
-            return (T) obj;
+            return (T) entityClassMetaDataClient.getConstructor().newInstance(objs.toArray());
         } catch (Exception e) {
             throw new RuntimeException("Не удалось обработать ResultSet", e);
         }
@@ -54,8 +49,8 @@ public class EntitySqlParamsImpl<T> implements EntitySqlParams<T> {
             var field = object.getClass().getDeclaredField(name);
             field.setAccessible(true);
             return field.get(object);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
