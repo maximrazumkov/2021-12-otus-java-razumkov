@@ -18,3 +18,5 @@
 6. Концепты проектирования ООП. ДЗ - hw12-solid
 
 7. Structural patterns. ДЗ  - hw15-patterns
+
+8. Сериализация. ДЗ - hw16-io
