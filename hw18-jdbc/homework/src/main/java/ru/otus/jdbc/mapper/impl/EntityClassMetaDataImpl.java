@@ -24,15 +24,26 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     private static <T> SqlMetaData<T> getSqlMetaData(Class<T> clazz) {
         try {
+            Class<?>[] result = getFields(clazz.getDeclaredFields()).stream()
+                    .map(Field::getType)
+                    .toArray(Class<?>[]::new);
+            Constructor<?> constructor = clazz.getConstructor(result);
             return SqlMetaData.builder()
                     .setType(clazz)
-                    .setConstructor(clazz.getConstructor())
+                    .setConstructor(constructor)
                     .setIdField(getIdField(clazz.getDeclaredFields()))
                     .setFields(getFields(clazz.getDeclaredFields()))
                     .build();
         } catch (Exception e) {
             throw new RuntimeException("Не удалось обработать Entity", e);
         }
+    }
+
+    private static Class<?>[] getConstructor(Class<?> clazz) {
+        Class<?>[] result = getFields(clazz.getDeclaredFields()).stream()
+                .map(Field::getType)
+                .toArray(Class<?>[]::new);
+        return clazz.getConstructor(result);
     }
 
     private static Field getIdField(Field[] fields) {

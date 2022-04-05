@@ -4,7 +4,9 @@ import ru.otus.jdbc.mapper.EntityClassMetaData;
 import ru.otus.jdbc.mapper.EntitySQLMetaData;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
@@ -22,28 +24,26 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
     @Override
     public String getSelectAllSql() {
-        return String.format(SELECT, getAllFields(), getTableName());
+        return String.format(SELECT, getAllFields(Field::getName), getTableName());
     }
 
     @Override
     public String getSelectByIdSql() {
-        return String.format(SELECT_BY_ID, getAllFields(), getTableName(), getIdFieldName());
+        return String.format(SELECT_BY_ID, getAllFields(Field::getName), getTableName(), getIdFieldName());
     }
 
     @Override
     public String getInsertSql() {
-        return String.format(INSERT, getTableName(), getAllFields(), getValues());
+        return String.format(INSERT, getTableName(), getFieldsWithoutId(Field::getName), getFieldsWithoutId(field -> "?"));
     }
 
     @Override
     public String getUpdateSql() {
-        return String.format(UPDATE, getTableName(), getSetUpdate(), getIdFieldName());
+        return String.format(UPDATE, getTableName(), getFieldsWithoutId(field -> field.getName() + " = ?"), getIdFieldName());
     }
 
-    private String getAllFields() {
-        return entityClassMetaDataClient.getAllFields().stream()
-                .map(Field::getName)
-                .collect(Collectors.joining(", "));
+    private String getAllFields(Function<Field, String> mapper) {
+        return getFields(entityClassMetaDataClient.getAllFields(), mapper);
     }
 
     private String getTableName() {
@@ -54,15 +54,13 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
         return entityClassMetaDataClient.getIdField().getName();
     }
 
-    private String getValues() {
-        return entityClassMetaDataClient.getAllFields().stream()
-                .map(field -> "?")
-                .collect(Collectors.joining(", "));
+    private String getFieldsWithoutId(Function<Field, String> mapper) {
+        return getFields(entityClassMetaDataClient.getFieldsWithoutId(), mapper);
     }
 
-    private String getSetUpdate() {
-        return entityClassMetaDataClient.getAllFields().stream()
-                .map(field -> field.getName() + " = ?")
+    private String getFields(List<Field> fields, Function<Field, String> mapper) {
+        return fields.stream()
+                .map(mapper)
                 .collect(Collectors.joining(", "));
     }
 }

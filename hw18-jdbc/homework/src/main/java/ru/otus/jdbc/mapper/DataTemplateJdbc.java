@@ -1,9 +1,8 @@
 package ru.otus.jdbc.mapper;
 
-import ru.otus.core.repository.DataTemplate;
-import ru.otus.core.repository.DataTemplateException;
-import ru.otus.core.repository.executor.DbExecutor;
-import ru.otus.crm.model.Client;
+import ru.otus.executor.DataTemplate;
+import ru.otus.executor.DataTemplateException;
+import ru.otus.executor.DbExecutor;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,10 +18,12 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private final DbExecutor dbExecutor;
     private final EntitySQLMetaData entitySQLMetaData;
+    private final EntitySqlParams<T> entitySqlParams;
 
-    public DataTemplateJdbc(DbExecutor dbExecutor, EntitySQLMetaData entitySQLMetaData) {
+    public DataTemplateJdbc(DbExecutor dbExecutor, EntitySQLMetaData entitySQLMetaData, EntitySqlParams<T> entitySqlParams) {
         this.dbExecutor = dbExecutor;
         this.entitySQLMetaData = entitySQLMetaData;
+        this.entitySqlParams = entitySqlParams;
     }
 
     @Override
@@ -30,8 +31,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), List.of(id), rs -> {
             try {
                 if (rs.next()) {
-                    rs.
-                    return new Client(rs.getLong("id"), rs.getString("name"));
+                    return entitySqlParams.getObject(rs);
                 }
                 return null;
             } catch (SQLException e) {
@@ -43,10 +43,10 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     @Override
     public List<T> findAll(Connection connection) {
         return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectAllSql(), Collections.emptyList(), rs -> {
-            var clientList = new ArrayList<Client>();
+            var clientList = new ArrayList<T>();
             try {
                 while (rs.next()) {
-                    clientList.add(new Client(rs.getLong("id"), rs.getString("name")));
+                    clientList.add(entitySqlParams.getObject(rs));
                 }
                 return clientList;
             } catch (SQLException e) {
@@ -57,11 +57,27 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     @Override
     public long insert(Connection connection, T client) {
-        throw new UnsupportedOperationException();
+        try {
+            return dbExecutor.executeStatement(
+                    connection,
+                    entitySQLMetaData.getInsertSql(),
+                    entitySqlParams.getFiledValuesWithoutId(client)
+            );
+        } catch (Exception e) {
+            throw new DataTemplateException(e);
+        }
     }
 
     @Override
     public void update(Connection connection, T client) {
-        throw new UnsupportedOperationException();
+        try {
+            dbExecutor.executeStatement(
+                    connection,
+                    entitySQLMetaData.getUpdateSql(),
+                    entitySqlParams.getFiledValues(client)
+            );
+        } catch (Exception e) {
+            throw new DataTemplateException(e);
+        }
     }
 }
