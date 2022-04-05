@@ -13,6 +13,8 @@
 
 4. Сборщик мусора. ДЗ - hw08-gc
 
+5. Байт код, class-loader, инструментация, asm. ДЗ - hw10-byteCodes
+
 6. Концепты проектирования ООП. ДЗ - hw12-solid
 
-5. Байт код, class-loader, инструментация, asm. ДЗ - hw10-byteCodes
+7. Structural patterns. ДЗ  - hw15-patterns
