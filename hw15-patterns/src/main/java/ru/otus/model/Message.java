@@ -112,7 +112,13 @@ public class Message implements Cloneable {
 
     @Override
     public Message clone() {
-        return toBuilder().build();
+        try {
+            ObjectForMessage objectForMessage = this.field13.clone();
+            Builder builder = this.toBuilder().field13(objectForMessage);
+            return builder.build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

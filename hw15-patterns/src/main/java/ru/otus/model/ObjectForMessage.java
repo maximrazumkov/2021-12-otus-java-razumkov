@@ -22,6 +22,15 @@ public class ObjectForMessage implements Cloneable {
     }
 
     @Override
+    public ObjectForMessage clone() {
+        try {
+            return new ObjectForMessage(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public String toString() {
         return "ObjectForMessage{" +
                 "data=" + data +
