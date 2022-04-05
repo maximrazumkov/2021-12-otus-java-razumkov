@@ -7,7 +7,7 @@ targetCompatibility = JavaVersion.VERSION_17
 
 dependencies {
     dependencies {
-        implementation project(':hw18-jdbc')
+        implementation project(':hw18-jdbc:demo')
 
         implementation 'ch.qos.logback:logback-classic'
         implementation 'org.flywaydb:flyway-core'
