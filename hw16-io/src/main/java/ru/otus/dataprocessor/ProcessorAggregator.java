@@ -1,7 +1,5 @@
 package ru.otus.dataprocessor;
 
-import com.google.common.base.Functions;
-import com.google.common.collect.Ordering;
 import ru.otus.model.Measurement;
 
 import java.util.*;

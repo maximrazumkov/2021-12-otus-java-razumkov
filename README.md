@@ -15,8 +15,8 @@
 
 5. Байт код, class-loader, инструментация, asm. ДЗ - hw10-byteCodes
 
-6. -
+6. Концепты проектирования ООП. ДЗ - hw12-solid
 
-7. -
+7. Structural patterns. ДЗ  - hw15-patterns
 
 8. Сериализация. ДЗ - hw16-io
