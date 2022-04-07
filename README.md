@@ -22,3 +22,5 @@
 8. Сериализация. ДЗ - hw16-io
 
 9. JDBC. ДЗ - hw18-jdbc
+
+10. JPQL. ДЗ - hw21-hibernate-jpql

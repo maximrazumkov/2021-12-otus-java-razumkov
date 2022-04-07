@@ -37,3 +37,4 @@ out
 *.ipr
 *.idea
 
+*.DS_Store
