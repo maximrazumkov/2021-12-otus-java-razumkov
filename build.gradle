@@ -31,6 +31,8 @@ allprojects {
             dependency "org.projectlombok:lombok:${Versions.lombok}"
             dependency("org.ow2.asm:asm-commons:${Versions.asm}")
             dependency("com.fasterxml.jackson.core:jackson-core:${Versions.jackson}")
+            dependency("org.testcontainers:junit-jupiter:${Versions.testcontainers}")
+            dependency("org.testcontainers:postgresql:${Versions.testcontainers}")
         }
     }
 }
