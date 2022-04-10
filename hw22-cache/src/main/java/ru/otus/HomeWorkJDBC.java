@@ -3,6 +3,9 @@ package ru.otus;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.cachehw.HwCache;
+import ru.otus.cachehw.HwListener;
+import ru.otus.cachehw.MyCache;
 import ru.otus.datasource.DriverManagerDataSource;
 import ru.otus.executor.DbExecutorImpl;
 import ru.otus.mapper.*;
@@ -38,8 +41,17 @@ public class HomeWorkJDBC {
         EntitySqlParams<Client> entitySqlParamsClient = new EntitySqlParamsImpl<>(entityClassMetaDataClient);
         var dataTemplateClient = new DataTemplateJdbc<>(dbExecutor, entitySQLMetaDataClient, entitySqlParamsClient); //реализация DataTemplate, универсальная
 
+
+        HwCache<String, Client> clientCache = new MyCache<>();
+        HwListener<String, Client> clientCacheListener = new HwListener<String, Client>() {
+            @Override
+            public void notify(String key, Client value, String action) {
+                log.info("key:{}, value:{}, action: {}", key, value, action);
+            }
+        };
+        clientCache.addListener(clientCacheListener);
 // Код дальше должен остаться
-        var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
+        var dbServiceClient = new DbServiceClientImpl(dataTemplateClient, transactionRunner, clientCache);
         dbServiceClient.saveClient(new Client("dbServiceFirst"));
 
         var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
@@ -54,7 +66,16 @@ public class HomeWorkJDBC {
         EntitySqlParams<Manager> entitySqlParamsManager = new EntitySqlParamsImpl<>(entityClassMetaDataManager);
         var dataTemplateManager = new DataTemplateJdbc<Manager>(dbExecutor, entitySQLMetaDataManager, entitySqlParamsManager);
 
-        var dbServiceManager = new DbServiceManagerImpl(transactionRunner, dataTemplateManager);
+        HwCache<String, Manager> managerCache = new MyCache<>();
+        HwListener<String, Manager> managerCacheListener = new HwListener<String, Manager>() {
+            @Override
+            public void notify(String key, Manager value, String action) {
+                log.info("key:{}, value:{}, action: {}", key, value, action);
+            }
+        };
+        managerCache.addListener(managerCacheListener);
+
+        var dbServiceManager = new DbServiceManagerImpl(dataTemplateManager, transactionRunner, managerCache);
         dbServiceManager.saveManager(new Manager("ManagerFirst"));
 
         var managerSecond = dbServiceManager.saveManager(new Manager("ManagerSecond"));
