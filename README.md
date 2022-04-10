@@ -23,4 +23,6 @@
 
 9. JDBC. ДЗ - hw18-jdbc
 
-10. JPQL. ДЗ - hw21-hibernate-jpql
+10. JPQL. ДЗ - hw21-hibernate-jpql 
+
+11. Типы ссылок. Кэширование. ДЗ - hw22-cache
