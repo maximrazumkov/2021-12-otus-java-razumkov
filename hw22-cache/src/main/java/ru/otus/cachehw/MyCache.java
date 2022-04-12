@@ -1,13 +1,19 @@
 package ru.otus.cachehw;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.WeakHashMap;
+
 
 public class MyCache<K, V> implements HwCache<K, V> {
 
-    private final WeakHashMap<K, V> map = new WeakHashMap<>();
+    private static final Logger log = LoggerFactory.getLogger(MyCache.class);
+
+    private final Map<K, V> map = new WeakHashMap<>();
     private final List<HwListener<K, V>> listeners = new ArrayList<>();
 
     @Override
@@ -40,6 +46,12 @@ public class MyCache<K, V> implements HwCache<K, V> {
     }
 
     private void notice(K key, V value, String action) {
-        listeners.forEach(listener -> listener.notify(key, value, action));
+        listeners.forEach(listener -> {
+            try {
+                listener.notify(key, value, action);
+            } catch (Exception e) {
+                log.info("Не удалось выполнить действие: key:{}, value:{}, action: {}", key, value, action);
+            }
+        });
     }
 }
