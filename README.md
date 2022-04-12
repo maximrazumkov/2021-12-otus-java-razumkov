@@ -26,3 +26,5 @@
 10. JPQL. ДЗ - hw21-hibernate-jpql 
 
 11. Типы ссылок. Кэширование. ДЗ - hw22-cache
+
+12. Web сервер. ДЗ - hw24-webServer
