@@ -1,5 +1,6 @@
 package ru.otus.server;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -7,9 +8,11 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import ru.otus.dao.ClientDao;
 import ru.otus.dao.UserDao;
 import ru.otus.helpers.FileSystemHelper;
 import ru.otus.services.TemplateProcessor;
+import ru.otus.servlet.ClientServlet;
 import ru.otus.servlet.UsersApiServlet;
 import ru.otus.servlet.UsersServlet;
 
@@ -19,15 +22,19 @@ public class UsersWebServerSimple implements UsersWebServer {
     private static final String COMMON_RESOURCES_DIR = "static";
 
     private final UserDao userDao;
+    private final ClientDao clientDao;
+    private final ObjectMapper objectMapper;
     private final Gson gson;
     protected final TemplateProcessor templateProcessor;
     private final Server server;
 
-    public UsersWebServerSimple(int port, UserDao userDao, Gson gson, TemplateProcessor templateProcessor) {
+    public UsersWebServerSimple(UserDao userDao, ClientDao clientDao, ObjectMapper objectMapper, Gson gson, TemplateProcessor templateProcessor, Server server) {
         this.userDao = userDao;
+        this.clientDao = clientDao;
+        this.objectMapper = objectMapper;
         this.gson = gson;
         this.templateProcessor = templateProcessor;
-        server = new Server(port);
+        this.server = server;
     }
 
     @Override
@@ -55,7 +62,7 @@ public class UsersWebServerSimple implements UsersWebServer {
 
         HandlerList handlers = new HandlerList();
         handlers.addHandler(resourceHandler);
-        handlers.addHandler(applySecurity(servletContextHandler, "/users", "/api/user/*"));
+        handlers.addHandler(applySecurity(servletContextHandler, "/client", "/users", "/api/user/*"));
 
 
         server.setHandler(handlers);
@@ -78,6 +85,7 @@ public class UsersWebServerSimple implements UsersWebServer {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor, userDao)), "/users");
         servletContextHandler.addServlet(new ServletHolder(new UsersApiServlet(userDao, gson)), "/api/user/*");
+        servletContextHandler.addServlet(new ServletHolder(new ClientServlet(clientDao, objectMapper)), "/client");
         return servletContextHandler;
     }
 }

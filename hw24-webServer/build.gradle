@@ -8,10 +8,13 @@ targetCompatibility = JavaVersion.VERSION_17
 dependencies {
 
     implementation 'ch.qos.logback:logback-classic'
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.postgresql:postgresql'
-    implementation 'ch.qos.logback:logback-classic'
+    implementation("org.hibernate:hibernate-core")
+    implementation('org.flywaydb:flyway-core')
+    implementation("org.postgresql:postgresql")
     implementation 'com.zaxxer:HikariCP'
+    implementation 'com.fasterxml.jackson.core:jackson-core'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'javax.json:javax.json-api'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 

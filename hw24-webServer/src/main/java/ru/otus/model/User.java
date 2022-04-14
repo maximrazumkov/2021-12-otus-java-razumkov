@@ -1,11 +1,27 @@
 package ru.otus.model;
 
-public class User {
+import javax.persistence.*;
+import java.io.Serializable;
 
-    private final long id;
-    private final String name;
-    private final String login;
-    private final String password;
+@Entity
+@Table(name = "usr")
+public class User implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "login")
+    private String login;
+
+    @Column(name = "password")
+    private String password;
+
+    public User() {
+    }
 
     public User(long id, String name, String login, String password) {
         this.id = id;

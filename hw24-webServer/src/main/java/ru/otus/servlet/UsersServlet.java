@@ -32,5 +32,4 @@ public class UsersServlet extends HttpServlet {
         response.setContentType("text/html");
         response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, paramsMap));
     }
-
 }

@@ -1,5 +1,6 @@
-package ru.otus.dao;
+package ru.otus.dao.impl;
 
+import ru.otus.dao.UserDao;
 import ru.otus.model.User;
 
 import java.util.HashMap;
