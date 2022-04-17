@@ -1,8 +1,5 @@
 package ru.otus;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.security.LoginService;
 import org.hibernate.cfg.Configuration;
 import ru.otus.core.repository.DataTemplateHibernate;
@@ -12,34 +9,19 @@ import ru.otus.crm.dbmigrations.MigrationsExecutorFlyway;
 import ru.otus.model.Address;
 import ru.otus.model.Client;
 import ru.otus.model.Phone;
-import ru.otus.dao.impl.DbClientDao;
 import ru.otus.dao.impl.DbUserDao;
 import ru.otus.dao.UserDao;
-import ru.otus.helpers.FileSystemHelper;
 import ru.otus.model.User;
 import ru.otus.server.UsersWebServer;
 import ru.otus.server.UsersWebServerWithBasicSecurity;
 import ru.otus.services.DbLoginServiceImpl;
+import ru.otus.services.DbServiceClientImpl;
 import ru.otus.services.TemplateProcessor;
 import ru.otus.services.TemplateProcessorImpl;
 
-/*
-    Полезные для демо ссылки
-
-    // Стартовая страница
-    http://localhost:8080
-
-    // Страница пользователей
-    http://localhost:8080/users
-
-    // REST сервис
-    http://localhost:8080/api/user/3
-*/
-public class WebServerWithBasicSecurityDemo {
+public class WebServerWithBasicSecurityHw {
     private static final int WEB_SERVER_PORT = 8080;
     private static final String TEMPLATES_DIR = "/templates/";
-    private static final String HASH_LOGIN_SERVICE_CONFIG_NAME = "realm.properties";
-    private static final String REALM_NAME = "AnyRealm";
     private static final String HIBERNATE_CFG_FILE = "hibernate.cfg.xml";
 
     public static void main(String[] args) throws Exception {
@@ -53,16 +35,12 @@ public class WebServerWithBasicSecurityDemo {
         var transactionManager = new TransactionManagerHibernate(sessionFactory);
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
         var userTemplate = new DataTemplateHibernate<>(User.class);
-        var dbClientDao = new DbClientDao(clientTemplate, transactionManager);
+        var dbClientService = new DbServiceClientImpl(transactionManager, clientTemplate);
 
         UserDao userDao = new DbUserDao(userTemplate, transactionManager);
-        Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
         TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
-
         LoginService loginService = new DbLoginServiceImpl(userDao);
-
-        UsersWebServer usersWebServer = new UsersWebServerWithBasicSecurity(WEB_SERVER_PORT,
-                loginService, userDao, gson, templateProcessor, dbClientDao, new ObjectMapper());
+        UsersWebServer usersWebServer = new UsersWebServerWithBasicSecurity(WEB_SERVER_PORT, loginService, templateProcessor, dbClientService);
 
         usersWebServer.start();
         usersWebServer.join();

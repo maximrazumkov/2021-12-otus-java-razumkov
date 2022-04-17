@@ -1,7 +1,5 @@
 package ru.otus.server;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.LoginService;
@@ -11,8 +9,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.security.Constraint;
-import ru.otus.dao.ClientDao;
-import ru.otus.dao.UserDao;
+import ru.otus.services.DBServiceClient;
 import ru.otus.services.TemplateProcessor;
 
 import java.util.ArrayList;
@@ -28,13 +25,10 @@ public class UsersWebServerWithBasicSecurity extends UsersWebServerSimple {
 
     public UsersWebServerWithBasicSecurity(int port,
                                            LoginService loginService,
-                                           UserDao userDao,
-                                           Gson gson,
                                            TemplateProcessor templateProcessor,
-                                           ClientDao clientDao,
-                                           ObjectMapper objectMapper
+                                           DBServiceClient dbServiceClient
                                            ) {
-        super(userDao, clientDao, objectMapper, gson, templateProcessor, new Server(port));
+        super(dbServiceClient, templateProcessor, new Server(port));
         this.loginService = loginService;
     }
 
