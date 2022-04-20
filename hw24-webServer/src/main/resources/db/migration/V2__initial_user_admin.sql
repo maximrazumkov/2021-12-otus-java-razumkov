@@ -1,0 +1,1 @@
+insert into usr (name, login, password) values ('admin', 'admin', 'admin');

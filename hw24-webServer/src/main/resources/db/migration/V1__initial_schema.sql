@@ -22,5 +22,3 @@ create table usr
     login varchar(32) not null,
     password varchar(32) not null
 );
-insert into usr (name, login, password) values ('admin', 'admin', 'admin');
-
