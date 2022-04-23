@@ -6,6 +6,8 @@ import org.reflections.util.QueryFunction;
 import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
+import ru.otus.exception.BeanDefinitionException;
+import ru.otus.exception.NotFoundBeanException;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,11 +29,11 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
 
-    public AppComponentsContainerImpl(String packs) throws Exception {
+    public AppComponentsContainerImpl(String packs) {
         processConfig(packs);
     }
 
-    private void processConfig(String configClass) throws Exception {
+    private void processConfig(String configClass) {
         List<Class<?>> annotatedClasses = getAnnotatedClasses(configClass);
         annotatedClasses.forEach(this::checkConfigClass);
         initAppContext(annotatedClasses);
@@ -47,11 +49,18 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     private void initAppComponents(Object instance, List<Method> methods) {
         methods.forEach(method -> {
-            String name = method.getAnnotation(AppComponent.class).name();
+            String beanName = method.getAnnotation(AppComponent.class).name();
+            validateBeanName(beanName);
             Object bean = callMethod(instance, method, getParametersMethod(method));
             appComponents.add(bean);
-            appComponentsByName.put(name, bean);
+            appComponentsByName.put(beanName, bean);
         });
+    }
+
+    private void validateBeanName(String beanName) {
+        if (appComponentsByName.containsKey(beanName)) {
+            throw new BeanDefinitionException(String.format("Invalid bean definition with name %s. It's already exist.", beanName));
+        }
     }
 
     private Object[] getParametersMethod(Method method) {
@@ -98,14 +107,31 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     @Override
     public <C> C getAppComponent(Class<C> componentClass) {
-        return (C) appComponents.stream()
+        List<?> components = getAppComponentByClass(componentClass);
+        validateComponents(components, componentClass.getName());
+        return (C) components.get(0);
+    }
+
+    private List<?> getAppComponentByClass(Class<?> componentClass) {
+        return appComponents.stream()
                 .filter(appComponent -> componentClass.isAssignableFrom(appComponent.getClass()))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Error bean!"));
+                .toList();
+    }
+
+    private void validateComponents(List<?> components, String nameBean) {
+        if (components.isEmpty()) {
+            throw new NotFoundBeanException("Not found bean " + nameBean);
+        }
+        if (components.size() > 1) {
+            throw new BeanDefinitionException(String.format("Bean name %s more than one.",nameBean));
+        }
     }
 
     @Override
     public <C> C getAppComponent(String componentName) {
-        return (C) appComponentsByName.get(componentName);
+        if (appComponentsByName.containsKey(componentName)) {
+            return (C) appComponentsByName.get(componentName);
+        }
+        throw new NotFoundBeanException("Not found bean with name " + componentName);
     }
 }

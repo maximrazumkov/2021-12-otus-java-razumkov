@@ -6,6 +6,8 @@ import ru.otus.config.AppConfig;
 import ru.otus.services.GameProcessor;
 import ru.otus.services.GameProcessorImpl;
 
+import java.awt.*;
+
 /*
 В классе AppComponentsContainerImpl реализовать обработку, полученной в конструкторе конфигурации,
 основываясь на разметке аннотациями из пакета appcontainer. Так же необходимо реализовать методы getAppComponent.
@@ -33,8 +35,9 @@ public class App {
         //AppComponentsContainer container = new AppComponentsContainerImpl(AppConfig.class);
 
         // Приложение должно работать в каждом из указанных ниже вариантов
-        //GameProcessor gameProcessor = container.getAppComponent(GameProcessor.class);
-        GameProcessor gameProcessor = container.getAppComponent(GameProcessorImpl.class);
+        GameProcessor gameProcessor = container.getAppComponent(GameProcessor.class);
+        RadialGradientPaint gameProcessor2 = container.getAppComponent(RadialGradientPaint.class);
+        //GameProcessor gameProcessor = container.getAppComponent(GameProcessorImpl.class);
         //GameProcessor gameProcessor = container.getAppComponent("gameProcessor");
 
         gameProcessor.startGame();
