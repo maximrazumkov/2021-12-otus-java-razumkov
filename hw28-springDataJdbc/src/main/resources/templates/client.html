@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Список клиентов</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
+<body>
+<div class="container">
+    <div class="container">
+        <h1>Создание пользователя:</h1>
+        <div class="card-body">
+            <form th:action="@{/client}" th:object="${client}" method="POST">
+                <label for="fullName">Полное имя</label>
+                <input type="input" th:field="*{fullName}" class="form-control" name="fullName" id="fullName" aria-describedby="add fullName" placeholder="Введите полное имя">
+                <br/>
+                <label for="address">Адрес</label>
+                <input type="input" th:field="*{address}" class="form-control" name="address" id="address" aria-describedby="add address" placeholder="Введите адрес">
+                <br/>
+                <label for="phone">Телефон</label>
+                <input type="input" th:field="*{phone}" class="form-control" name="phone" id="phone" aria-describedby="add phone" placeholder="Введите номер телефона">
+                <br/>
+                <input type="submit" value="Создать клиента" />
+            </form>
+        </div>
+
+        <br/>
+
+        <div th:if="${errorMessage}" th:utext="${errorMessage}">
+            ...
+        </div>
+    </div>
+    <div class="container">
+        <h1>Список клиентов</h1>
+        <br/><br/>
+        <table class="table">
+            <tr>
+                <th scope="col">Полное имя</th>
+                <th scope="col">Адрес</th>
+                <th scope="col">Телефон</th>
+            </tr>
+            <tr th:each ="client : ${clients}">
+                <td th:utext="${client.fullName}">...</td>
+                <td th:utext="${client.address}">...</td>
+                <td th:utext="${client.phone}">...</td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
