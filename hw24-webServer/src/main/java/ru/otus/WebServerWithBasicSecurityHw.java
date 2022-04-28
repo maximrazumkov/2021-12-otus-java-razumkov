@@ -2,8 +2,8 @@ package ru.otus;
 
 import org.eclipse.jetty.security.LoginService;
 import org.hibernate.cfg.Configuration;
-import ru.otus.core.repository.DataTemplateHibernate;
-import ru.otus.core.repository.HibernateUtils;
+import ru.otus.repository.DataTemplateHibernate;
+import ru.otus.repository.HibernateUtils;
 import ru.otus.core.sessionmanager.TransactionManagerHibernate;
 import ru.otus.crm.dbmigrations.MigrationsExecutorFlyway;
 import ru.otus.model.Address;
@@ -14,10 +14,10 @@ import ru.otus.dao.UserDao;
 import ru.otus.model.User;
 import ru.otus.server.UsersWebServer;
 import ru.otus.server.UsersWebServerWithBasicSecurity;
-import ru.otus.services.DbLoginServiceImpl;
-import ru.otus.services.DbServiceClientImpl;
-import ru.otus.services.TemplateProcessor;
-import ru.otus.services.TemplateProcessorImpl;
+import ru.otus.service.DbLoginServiceImpl;
+import ru.otus.service.DbServiceClientImpl;
+import ru.otus.service.TemplateProcessor;
+import ru.otus.service.TemplateProcessorImpl;
 
 public class WebServerWithBasicSecurityHw {
     private static final int WEB_SERVER_PORT = 8080;

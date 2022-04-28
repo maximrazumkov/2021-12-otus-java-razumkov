@@ -4,9 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import ru.otus.appcontainer.AppComponentsContainerImpl;
-import ru.otus.services.EquationPreparer;
-import ru.otus.services.IOService;
-import ru.otus.services.PlayerService;
+import ru.otus.service.EquationPreparer;
+import ru.otus.service.IOService;
+import ru.otus.service.PlayerService;
 
 import java.io.PrintStream;
 import java.lang.reflect.Modifier;

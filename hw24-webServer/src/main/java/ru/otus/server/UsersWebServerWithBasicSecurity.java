@@ -9,8 +9,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.security.Constraint;
-import ru.otus.services.DBServiceClient;
-import ru.otus.services.TemplateProcessor;
+import ru.otus.service.DBServiceClient;
+import ru.otus.service.TemplateProcessor;
 
 import java.util.ArrayList;
 import java.util.Arrays;

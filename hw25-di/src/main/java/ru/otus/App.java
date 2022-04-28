@@ -2,9 +2,7 @@ package ru.otus;
 
 import ru.otus.appcontainer.AppComponentsContainerImpl;
 import ru.otus.appcontainer.api.AppComponentsContainer;
-import ru.otus.config.AppConfig;
-import ru.otus.services.GameProcessor;
-import ru.otus.services.GameProcessorImpl;
+import ru.otus.service.GameProcessor;
 
 import java.awt.*;
 

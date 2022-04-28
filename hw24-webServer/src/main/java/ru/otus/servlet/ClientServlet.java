@@ -7,8 +7,8 @@ import ru.otus.dto.ClientDto;
 import ru.otus.model.Address;
 import ru.otus.model.Client;
 import ru.otus.model.Phone;
-import ru.otus.services.DBServiceClient;
-import ru.otus.services.TemplateProcessor;
+import ru.otus.service.DBServiceClient;
+import ru.otus.service.TemplateProcessor;
 
 import java.io.IOException;
 import java.util.List;

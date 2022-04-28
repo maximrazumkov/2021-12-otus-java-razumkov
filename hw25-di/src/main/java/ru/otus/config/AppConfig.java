@@ -2,7 +2,7 @@ package ru.otus.config;
 
 import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
-import ru.otus.services.*;
+import ru.otus.service.*;
 
 @AppComponentsContainerConfig(order = 1)
 public class AppConfig {

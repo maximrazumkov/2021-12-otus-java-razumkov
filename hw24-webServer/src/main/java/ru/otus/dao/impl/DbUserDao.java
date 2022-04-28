@@ -2,7 +2,7 @@ package ru.otus.dao.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.core.repository.DataTemplate;
+import ru.otus.repository.DataTemplate;
 import ru.otus.core.sessionmanager.TransactionManager;
 import ru.otus.dao.UserDao;
 import ru.otus.model.User;
