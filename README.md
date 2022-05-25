@@ -30,3 +30,5 @@
 12. Web сервер. ДЗ - hw24-webServer
 
 13. Dependency injection. ДЗ - hw25-di
+
+14. Spring Data Jdbc. ДЗ - hw28-springDataJdbc
