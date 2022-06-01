@@ -1,11 +1,12 @@
-# Spring Data Jdbc. ДЗ - hw28-springDataJdbc
+# Executors. ДЗ - hw31-executers
 
 # Цели занятия
-познакомитться с фреймворком Spring Data Jdbc
+познакомиться с пулами потоков в Java.
 
 # Краткое содержание
-чем Spring Data Jdbc отличается от Spring Data, MyBatis и т.д.</br>
-основные приемы использования Spring Data Jdbc</br>
+поддержка многопоточности в стандартной библиотеке;</br>
+Workers. Executors;</br>
+Fork/Join.
 
 # Результаты
-знания, как пользоваться Spring Data Jdbc
+конспект занятия: как и для чего использовать встроенные в jdk пулы потоков.

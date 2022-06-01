@@ -32,3 +32,5 @@
 13. Dependency injection. ДЗ - hw25-di
 
 14. Spring Data Jdbc. ДЗ - hw28-springDataJdbc
+
+15. Executors. ДЗ - hw31-executers
